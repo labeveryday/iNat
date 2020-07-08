@@ -1,0 +1,34 @@
+NAT ASA Workplan
+
+================Checks================
+
+----Verify current IP on Client ASA----
+
+{% for real, nat in checks_list %}
+show nat {{real}}
+show nat {{nat}}
+show run | in {{real}}
+show run | in {{nat}}
+show xlate | I {{real}}
+show xlate | I {{nat}}
+
+{% endfor %}
+
+
+=============Configuration=============
+
+config t
+
+{% for real, nat in verify_list %}
+object network {{real}}
+host {{real}}
+nat (inside,outside) static {{nat}}
+
+{% endfor %}
+
+Exit
+write mem
+
+Criteria for Success:
+1. All checks pass
+2. Connectivity flows and establishes as intended. 
